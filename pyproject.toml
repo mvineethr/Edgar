@@ -1,0 +1,37 @@
+[project]
+name = "edgar13f"
+version = "0.7.0"
+description = "Free, no-API-key Python client + CLI for SEC EDGAR 13F institutional holdings data"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Vineeth" }]
+dependencies = [
+    "requests>=2.31",
+    "lxml>=5.0",
+    "click>=8.1",
+    "rich>=13.0",
+    "flask>=3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "responses>=0.25",
+]
+mcp = [
+    "mcp>=1.2",
+]
+
+[project.scripts]
+edgar13f = "edgar13f.cli:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+edgar13f = ["dashboard.html", "static/*"]
