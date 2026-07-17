@@ -98,8 +98,19 @@
   }
   .widget.wide { grid-column: 1 / -1; }
   .widget .panel-b { max-height: 420px; }
+  .widget.tall .panel-b { max-height: 860px; }
   .wremove { color: var(--down); cursor: pointer; font-weight: bold; padding: 0 4px; }
   .wremove:hover { background: var(--down); color: #000; }
+  .wsize { color: var(--dim); cursor: pointer; font-weight: bold; padding: 0 4px; }
+  .wsize:hover { background: #161616; }
+  .wsize.on { color: var(--amber); }
+  #layouts-bar { margin-left: auto; display: inline-flex; gap: 4px; align-items: center; padding-bottom: 3px; }
+  #layouts-bar select {
+    background: #000; color: var(--text); border: 1px solid var(--border);
+    font: inherit; padding: 1px 4px; max-width: 140px;
+  }
+  .lay-btn { color: var(--dim); cursor: pointer; padding: 2px 6px; border: 1px solid var(--border); }
+  .lay-btn:hover { color: var(--amber); background: #161616; }
   #add-block {
     border: 1px dashed var(--border); color: var(--dim);
     display: flex; flex-direction: column; gap: 8px;
@@ -1312,6 +1323,17 @@ function getLayout() {
 function saveLayout(layout) { localStorage.setItem(LAYOUT_KEY, JSON.stringify(layout)); }
 let layout = null; // initialized in boot
 
+/* Named layout snapshots ("layout memory") - single user, localStorage. */
+const SAVED_LAYOUTS_KEY = "edgar13f_layouts_v1";
+function getSavedLayouts() {
+  try {
+    const d = JSON.parse(localStorage.getItem(SAVED_LAYOUTS_KEY) || "{}");
+    if (d && typeof d === "object" && !Array.isArray(d)) return d;
+  } catch (e) {}
+  return {};
+}
+function setSavedLayouts(d) { localStorage.setItem(SAVED_LAYOUTS_KEY, JSON.stringify(d)); }
+
 const CLASSIC_WIDGETS = [
   { type: "manager-portfolio", config: { manager: "buffett" } },
   { type: "manager-changes", config: { manager: "buffett" } },
@@ -1362,9 +1384,21 @@ function activeTab() { return layout.tabs.find(t => t.id === layout.active) || l
 /* ---- rendering ---- */
 function renderTabbar() {
   const bar = $("tabbar");
+  const savedNames = Object.keys(getSavedLayouts()).sort();
   bar.innerHTML = layout.tabs.map(t =>
     `<span class="dtab ${t.id === layout.active ? "active" : ""}" data-dtab="${esc(t.id)}">${esc(t.name)}${t.id !== "home" ? `<span class="tx" data-dtabrm="${esc(t.id)}" title="delete tab">&times;</span>` : ""}</span>`
-  ).join("") + `<span id="tab-add" title="new tab">+ TAB</span>`;
+  ).join("") + `<span id="tab-add" title="new tab">+ TAB</span>`
+  + `<span id="layouts-bar" title="named layout snapshots (saved in this browser)">
+       <span class="dim">LAYOUTS:</span>
+       <select id="layout-select">${
+         savedNames.length
+           ? savedNames.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("")
+           : `<option value="">- none saved -</option>`
+       }</select>
+       <span class="lay-btn" id="layout-save" title="snapshot ALL tabs + blocks under a name">SAVE</span>
+       <span class="lay-btn" id="layout-load" title="replace the current layout with the selected snapshot">LOAD</span>
+       <span class="lay-btn" id="layout-del" title="delete the selected snapshot">DEL</span>
+     </span>`;
 }
 
 function renderDashboard() {
@@ -1374,10 +1408,12 @@ function renderDashboard() {
   const widgetHtml = tab.widgets.map(w => {
     const def = WIDGETS[w.type];
     if (!def) return "";
-    return `<div class="panel widget ${def.wide ? "wide" : ""}" data-wid="${esc(w.id)}">
+    return `<div class="panel widget ${(def.wide || w.wide) ? "wide" : ""} ${w.tall ? "tall" : ""}" data-wid="${esc(w.id)}">
       <div class="panel-h">${esc(def.label)}
         ${widgetHeaderControl(w)}
-        <span class="wremove" data-wrm="${esc(w.id)}" title="remove block" style="margin-left:auto">&times;</span>
+        <span class="wsize ${w.wide ? "on" : ""}" data-wwide="${esc(w.id)}" title="toggle full width" style="margin-left:auto">&#8596;</span>
+        <span class="wsize ${w.tall ? "on" : ""}" data-wtall="${esc(w.id)}" title="toggle double height">&#8597;</span>
+        <span class="wremove" data-wrm="${esc(w.id)}" title="remove block">&times;</span>
       </div>
       <div class="panel-b" id="wb-${esc(w.id)}"><div class="loading">Loading...</div></div>
     </div>`;
@@ -1923,6 +1959,65 @@ async function boot() {
       saveLayout(layout);
       showScreen("dash");
       renderDashboard();
+      return;
+    }
+    // Per-widget size toggles: flip classes in place - no re-render, so
+    // the block's data isn't refetched just for a resize.
+    const wwide = e.target.closest("[data-wwide]");
+    if (wwide) {
+      const w = activeTab().widgets.find(x => x.id === wwide.dataset.wwide);
+      if (!w) return;
+      w.wide = !w.wide;
+      saveLayout(layout);
+      const def = WIDGETS[w.type] || {};
+      wwide.closest(".widget").classList.toggle("wide", !!(def.wide || w.wide));
+      wwide.classList.toggle("on", !!w.wide);
+      return;
+    }
+    const wtall = e.target.closest("[data-wtall]");
+    if (wtall) {
+      const w = activeTab().widgets.find(x => x.id === wtall.dataset.wtall);
+      if (!w) return;
+      w.tall = !w.tall;
+      saveLayout(layout);
+      wtall.closest(".widget").classList.toggle("tall", !!w.tall);
+      wtall.classList.toggle("on", !!w.tall);
+      return;
+    }
+    // Named layout snapshots (SAVE / LOAD / DEL in the tab bar).
+    if (e.target.closest("#layout-save")) {
+      const suggested = ($("layout-select") || {}).value || "";
+      const name = (prompt("Save current layout (all tabs + blocks) as:", suggested) || "")
+        .trim().toLowerCase();
+      if (!name) return;
+      const all = getSavedLayouts();
+      if (all[name] && !confirm(`Overwrite saved layout "${name}"?`)) return;
+      all[name] = JSON.parse(JSON.stringify(layout));
+      setSavedLayouts(all);
+      renderTabbar();
+      const sel = $("layout-select");
+      if (sel) sel.value = name;
+      return;
+    }
+    if (e.target.closest("#layout-load")) {
+      const name = ($("layout-select") || {}).value;
+      const all = getSavedLayouts();
+      if (!name || !all[name]) return;
+      if (!confirm(`Replace the current layout with "${name}"?`)) return;
+      layout = JSON.parse(JSON.stringify(all[name]));
+      if (!layout.tabs.find(t => t.id === layout.active)) layout.active = "home";
+      saveLayout(layout);
+      renderDashboard();
+      return;
+    }
+    if (e.target.closest("#layout-del")) {
+      const name = ($("layout-select") || {}).value;
+      const all = getSavedLayouts();
+      if (!name || !all[name]) return;
+      if (!confirm(`Delete saved layout "${name}"? (The current screen is unaffected.)`)) return;
+      delete all[name];
+      setSavedLayouts(all);
+      renderTabbar();
       return;
     }
     const wrm = e.target.closest("[data-wrm]");

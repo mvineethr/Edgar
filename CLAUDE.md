@@ -117,7 +117,9 @@ day). Browser localStorage holds watchlists, personal portfolio, layout.
 
 Working and verified live: **customizable HOME dashboard** (blank slate,
 "+ ADD BLOCK" widget picker with 12 block types, "+ TAB" user tabs,
-multiple named watchlists with scoped news/events, all in localStorage,
+per-block resize toggles (wide/tall), named layout snapshots
+(SAVE/LOAD/DEL in the tab bar, `edgar13f_layouts_v1`), multiple named
+watchlists with scoped news/events, all in localStorage,
 "RESTORE CLASSIC LAYOUT" one-click preset), manager portfolios w/ live
 quotes, Q/Q changes, consensus, holders (HDS), fundamentals (FA), DES
 screen with vendored KLineChart (unlimited indicators + drawing) and a
@@ -143,6 +145,13 @@ error clearly, never exercised).
    initial commit are all done.
 2. **Form 4 dashboard depth** - a watchlist-scoped insiders block, or
    insider-buy screening across the tracked universe.
+3. **Candidate new data sources** (from the user's public-API lists,
+   2026-07-17; all fit the no-required-key rule, none wired in yet):
+   CoinGecko or Coinpaprika (keyless crypto market caps/volumes - a
+   real CRYPTO screen instead of 5 hardcoded Yahoo symbols),
+   Frankfurter (keyless ECB FX time series - cross-rate matrix widget),
+   Federal Register API (keyless - new SEC rules/notices for the ECO
+   tab). Probe live before building (rate limits drift).
 
 ## Working rules
 

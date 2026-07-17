@@ -122,8 +122,11 @@ events (earnings dates + analyst views), insider transactions (Form 4
 buys/sells for a ticker), 13F position history (a manager's stake in
 one name across quarters), market news, Fed & policy, the Treasury
 yield curve, and world markets. "+ TAB" adds extra tabs for the
-less-important stuff. One click restores the classic layout if you want
-the original look back. Everything persists in your browser. Clicking
+less-important stuff. Every block has ↔ / ↕ toggles to make it full-width
+or double-height, and the LAYOUTS control in the tab bar saves named
+snapshots of your entire screen (all tabs + blocks + sizes) that you can
+reload or delete any time. One click restores the classic layout if you
+want the original look back. Everything persists in your browser. Clicking
 any symbol opens the full security screen, and its ← BACK button returns
 you to wherever you came from.
 

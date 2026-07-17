@@ -6,6 +6,39 @@ Newest session first.
 
 ---
 
+# Session 2026-07-17 (part 2): widget resize + named layout snapshots
+
+## What was asked
+
+Per-widget resize, and saving layouts "like a memory" (single user, no
+profiles needed). Plus a review of two public-API lists for candidate
+integrations (assessment delivered in chat; no new sources wired in -
+top keyless candidates recorded in CLAUDE.md's next-features list).
+
+## What was built
+
+- **Per-widget resize**: every dashboard block header now has ↔ (toggle
+  full width, same grid mechanic as the built-in `wide` widgets) and ↕
+  (double height: `.widget.tall .panel-b` max-height 420 -> 860px).
+  Stored as `w.wide` / `w.tall` booleans on the widget entry in the
+  layout; toggling flips classes in place so the block is NOT refetched
+  just for a resize.
+- **Named layout snapshots**: LAYOUTS: [select] SAVE/LOAD/DEL in the
+  dashboard tab bar. SAVE deep-copies the whole layout (all tabs,
+  blocks, sizes) into `edgar13f_layouts_v1` under a prompted name;
+  LOAD replaces the live layout (with confirm); DEL removes a snapshot.
+  All localStorage, consistent with watchlists/portfolio.
+
+## Verified live (browser)
+
+Toggled ↔/↕ on the insiders block (class + persisted booleans checked),
+saved snapshot "work", deleted the insiders block, LOAD restored it with
+its wide+tall sizing intact. Native prompt()/confirm() dialogs were
+stubbed via console during automation - they block the browser-pane
+tools - but the click path exercised was the real one.
+
+---
+
 # Session 2026-07-17: roadmap cleared - Form 4, position history, presets, ticker fallback, v0.7.0
 
 ## What was asked
