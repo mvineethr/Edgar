@@ -15,7 +15,7 @@ Claude Desktop config (claude_desktop_config.json):
         "command": "edgar", "args": ["mcp"],
         "env": {"EDGAR_USER_AGENT": "Jane Doe jane@example.com"}}}}
 
-Requires the optional dependency: pip install "edgar[mcp]"
+Requires the optional dependency: pip install "edgar-terminal[mcp]"
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ def build_server(user_agent: str):
     except ImportError as exc:  # pragma: no cover - exercised via CLI message
         raise ImportError(
             "The MCP server needs the 'mcp' package. Install it with:\n"
-            '    pip install "edgar[mcp]"'
+            '    pip install "edgar-terminal[mcp]"'
         ) from exc
 
     svc = Services(user_agent)

@@ -1,5 +1,5 @@
 [project]
-name = "edgar"
+name = "edgar-terminal"
 version = "0.8.0"
 description = "Free, no-API-key Python client + CLI + Bloomberg-style terminal for SEC EDGAR data"
 readme = "README.md"

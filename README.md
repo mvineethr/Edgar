@@ -197,7 +197,7 @@ agent can use it as a tool belt — ask your AI "what did Buffett buy last
 quarter and how have those stocks done since?" and it can actually answer:
 
 ```bash
-pip install "edgar[mcp]"
+pip install "edgar-terminal[mcp]"
 
 # Claude Code
 claude mcp add edgar -e EDGAR_USER_AGENT="Your Name you@example.com" -- edgar mcp

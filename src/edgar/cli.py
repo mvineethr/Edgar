@@ -746,7 +746,7 @@ def mcp():
 
         claude mcp add edgar -e EDGAR_USER_AGENT="You you@example.com" -- edgar mcp
 
-    Requires: pip install "edgar[mcp]"
+    Requires: pip install "edgar-terminal[mcp]"
     """
     ua = _get_user_agent()
     try:
