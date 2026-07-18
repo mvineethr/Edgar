@@ -1,8 +1,12 @@
-# Howlet
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mvineethr/Howlet/main/assets/banner.svg" alt="Howlet - free, open-source SEC EDGAR market terminal" width="600">
+</p>
 
-[![PyPI](https://img.shields.io/pypi/v/howlet.svg)](https://pypi.org/project/howlet/)
-[![CI](https://github.com/mvineethr/Howlet/actions/workflows/ci.yml/badge.svg)](https://github.com/mvineethr/Howlet/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+<p align="center">
+<a href="https://pypi.org/project/howlet/"><img src="https://img.shields.io/pypi/v/howlet.svg" alt="PyPI"></a>
+<a href="https://github.com/mvineethr/Howlet/actions/workflows/ci.yml"><img src="https://github.com/mvineethr/Howlet/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
+</p>
 
 A free, no-API-key Python client + CLI + **Bloomberg-style terminal
 dashboard** for SEC EDGAR data — starting from **Form 13F** (the
