@@ -1,8 +1,43 @@
-# HANDOVER - edgar
+# HANDOVER - Howlet
 
 Session log for picking this project back up. See `CLAUDE.md` for the
 standing dev brief (what the tool is, current status, constraints).
 Newest session first.
+
+---
+
+# Session 2026-07-17 (part 5): rebrand to Howlet, GitHub + CI live
+
+## What was asked
+
+User pushed to github.com/mvineethr/Edgar, then learned "edgar" was
+already a PyPI package (py-edgar, whose module is ALSO `edgar` - a
+site-packages collision if both are installed). After a naming session
+(owl themes; hedwig/hoot/owlet all taken or risky), settled on
+**howlet** - a real archaic word for a small owl, free on PyPI and
+GitHub-clean (verified live before choosing).
+
+## What was done
+
+- Full rename edgar -> howlet: package dir, imports, CLI, pyproject
+  (name/script/package-data/urls), MCP server name, `~/.edgar` ->
+  `~/.howlet` (existing cache moved), Dockerfile, launch.json, docs.
+  CRITICAL constraint: "EDGAR" survives everywhere it means SEC EDGAR
+  (URLs, EDGAR_USER_AGENT, `svc.edgar`, prose) - no blanket sed.
+- Dashboard rebrand: HOWLET ● TERMINAL with an inline great-horned-owl
+  SVG in the topbar + SVG data-URI favicon (no external assets).
+  localStorage keys edgar_* -> howlet_* WITH a boot-time migration that
+  copies any edgar13f_*/edgar_* state to howlet_* (never overwrites) -
+  the previous two renames had silently orphaned saved state.
+- Also this session, pre-rename: pushed to GitHub for the first time,
+  and CI's first-ever run FAILED on a real latent bug -
+  `from tests.test_form4 import ...` only works under `python -m
+  pytest` (cwd on sys.path), not the bare `pytest` that ci.yml runs.
+  Fixed to a same-directory import; CI green on all 6 matrix combos
+  since. Lesson: run the EXACT CI command locally, not an equivalent.
+- PyPI naming trap recorded: py-edgar owns `edgar`; `owlet` is a
+  geospatial package; check the module name inside a dist, not just
+  the project name, before declaring a name safe.
 
 ---
 
@@ -16,7 +51,7 @@ do (accounts).
 
 ## What was built (each verified live before moving on)
 
-- **Quick wins**: `edgar warm` (14 portfolios + 1275 CUSIPs mapped in
+- **Quick wins**: `howlet warm` (14 portfolios + 1275 CUSIPs mapped in
   one pre-fetch run, verified), EXPORT/IMPORT full-state JSON backup in
   the tab bar, CRYPTO TOP 20 home block, ⤓ CSV buttons (portfolio/
   changes/consensus/EQS), ruff in CI (3 findings fixed), 2 HTML smoke
@@ -250,7 +285,7 @@ pre-publish items (CLAUDE.md cleanup, vendor KLineChart, CI).
 - **CLAUDE.md rewritten** from a session diary into a concise brief:
   module map, hard rules, gotchas list, status, roadmap. History lives
   here in HANDOVER.md only.
-- **KLineChart vendored** into `src/edgar/static/` (+ its Apache-2.0
+- **KLineChart vendored** into `src/howlet/static/` (+ its Apache-2.0
   LICENSE file); served via Flask's default /static/; no CDN at runtime.
   package-data updated.
 - **GitHub Actions CI** (.github/workflows/ci.yml): ubuntu+windows x
@@ -453,7 +488,7 @@ be, plus an MCP server for the "plug into AI" part.
   `buffett PORT`, `MKTS`, `WATCH`, `HELP`), five screens, clickable
   tickers everywhere, range-selectable SVG chart, watchlist in
   localStorage.
-- `mcp_server.py` + `edgar mcp` - FastMCP stdio server, 11 tools,
+- `mcp_server.py` + `howlet mcp` - FastMCP stdio server, 11 tools,
   optional dep (`pip install "edgar[mcp]"`).
 - New CLI: `facts`, `holders`, `mcp`. Tests 37 -> 48, all offline.
 
@@ -490,15 +525,15 @@ info and accurate news."
   price, prev close, 1-mo sparkline). All failures -> `None`, never raise.
 - `tickers.py` - `CusipTickerResolver`: OpenFIGI keyless mapping of 13F
   CUSIPs to Yahoo tickers, batches of 5 @ 3s, disk-cached forever in
-  `~/.edgar/cusip_tickers.json` (network failures NOT cached).
+  `~/.howlet/cusip_tickers.json` (network failures NOT cached).
 - `news.py` - RSS aggregation: Yahoo Finance (market + per-ticker), CNBC,
   MarketWatch, SEC press releases. Broken feeds skipped, deduped, sorted.
 - `consensus.py` - the old wishlist #1: cross-manager CUSIP overlap with
-  per-manager portfolio weights (`edgar consensus`).
+  per-manager portfolio weights (`howlet consensus`).
 - `cache.py` - old wishlist #2: holdings cached by accession number under
-  `~/.edgar/holdings/`; wired into CLI, dashboard, consensus.
+  `~/.howlet/holdings/`; wired into CLI, dashboard, consensus.
 - `dashboard.py` + `dashboard.html` - Flask JSON API + single-file dark
-  terminal UI (`edgar dashboard`, port 8813). World tape, portfolio w/
+  terminal UI (`howlet dashboard`, port 8813). World tape, portfolio w/
   live px + sparklines + weights, Q/Q changes, allocation bars, consensus
   panel, news panel scoped to held tickers. `.claude/launch.json` exists
   for the Claude Code preview panel.
@@ -549,8 +584,8 @@ working session, 2026-06-30.
 
 This scaffold was originally built offline with no network access, so
 nothing had ever round-tripped against real sec.gov servers. Built a
-`Dockerfile` + `.dockerignore`, then ran `edgar search berkshire` and
-`edgar holdings buffett` live via `docker run`.
+`Dockerfile` + `.dockerignore`, then ran `howlet search berkshire` and
+`howlet holdings buffett` live via `docker run`.
 
 **Found a real bug immediately:** `search_company_cik` parsed
 `output=atom` from `/cgi-bin/browse-edgar`, but SEC's atom feed has a
@@ -586,16 +621,16 @@ filings are collected.
 
 **Quarter-over-quarter diffing** - this was CLAUDE.md's #1 "actually
 interesting feature," so built it:
-- `src/edgar/diff.py::diff_holdings(prior, current)` - pure function,
+- `src/howlet/diff.py::diff_holdings(prior, current)` - pure function,
   no HTTP. Aggregates `Holding`s by CUSIP *within* each filing first
   (necessary: Berkshire's own 13F lists AAPL across 5 separate infoTable
   entries in one filing, split some other way internally), then compares
   the two aggregated snapshots and classifies each CUSIP as NEW / SOLD /
   INCREASED / DECREASED / UNCHANGED.
 - `HoldingChange` dataclass added to `models.py`.
-- `edgar diff <cik-or-preset>` CLI command, with `--csv` and
+- `howlet diff <cik-or-preset>` CLI command, with `--csv` and
   `--show-unchanged` (unchanged positions are hidden by default - noise).
-- Verified live: `edgar diff buffett` correctly diffed Berkshire's
+- Verified live: `howlet diff buffett` correctly diffed Berkshire's
   Q4 2025 -> Q1 2026 filings. Notably it correctly surfaced Alphabet
   (GOOGL/GOOG) and Lennar (LEN/LEN.B) as *two separate rows each* - these
   are genuinely different CUSIPs for different share classes, so that's
@@ -613,14 +648,14 @@ Went from 4 tests to 11, all offline/mocked, all passing:
 
 Run with:
 ```bash
-docker run --rm -v "$(pwd):/app" --entrypoint sh edgar:latest \
+docker run --rm -v "$(pwd):/app" --entrypoint sh howlet:latest \
   -c "pip install -q pytest responses && python -m pytest -v"
 ```
 (or locally: `pip install -e ".[dev]" && pytest -v`)
 
 ## Current state
 
-- Docker image builds clean: `docker build -t edgar:latest .`
+- Docker image builds clean: `docker build -t howlet:latest .`
 - 11/11 tests pass offline.
 - `search`, `holdings`, and `diff` all verified against the live SEC API
   this session, not just offline mocks.
@@ -634,7 +669,7 @@ From CLAUDE.md, one item remains:
   information table - still untested. `get_information_table` should
   raise a clear error on these (by design) rather than silently failing,
   but that path has never been exercised against a real old filing. If
-  picking this up: find an old 13F-HR (pre-~2013) via `edgar search`,
+  picking this up: find an old 13F-HR (pre-~2013) via `howlet search`,
   fetch its filing index live, and confirm the error message is actually
   useful rather than a raw parse traceback.
 
@@ -647,7 +682,7 @@ session since diffing is done):
    filings are immutable once filed, so repeated `diff`/`holdings` calls
    are needlessly re-fetching the same XML.
 3. Expand `presets.py` beyond the current 5 - verify each new CIK via
-   `edgar search` first, don't guess.
+   `howlet search` first, don't guess.
 4. If heading toward public release: GitHub Actions (lint + pytest on
    push), a CHANGELOG, PyPI publishing.
 

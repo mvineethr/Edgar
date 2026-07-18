@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import responses
 
-from edgar.crypto import COINGECKO_URL, COINPAPRIKA_URL, CryptoClient
+from howlet.crypto import COINGECKO_URL, COINPAPRIKA_URL, CryptoClient
 
 # Trimmed from live responses captured 2026-07-17.
 COINGECKO_JSON = [

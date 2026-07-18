@@ -1,5 +1,5 @@
 [project]
-name = "edgar-terminal"
+name = "howlet"
 version = "0.8.0"
 description = "Free, no-API-key Python client + CLI + Bloomberg-style terminal for SEC EDGAR data"
 readme = "README.md"
@@ -15,9 +15,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mvineethr/Edgar"
-Repository = "https://github.com/mvineethr/Edgar"
-Changelog = "https://github.com/mvineethr/Edgar/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/mvineethr/Howlet"
+Repository = "https://github.com/mvineethr/Howlet"
+Changelog = "https://github.com/mvineethr/Howlet/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [
@@ -30,7 +30,7 @@ mcp = [
 ]
 
 [project.scripts]
-edgar = "edgar.cli:main"
+howlet = "howlet.cli:main"
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
@@ -40,4 +40,4 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-edgar = ["dashboard.html", "static/*"]
+howlet = ["dashboard.html", "static/*"]

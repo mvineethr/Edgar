@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import responses
 
-from edgar import macro
+from howlet import macro
 
 # Mirrors the REAL feed structure: <m:properties> is in the OData
 # *metadata* namespace, children in the d: dataservices one. The first

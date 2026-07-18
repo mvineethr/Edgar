@@ -1,4 +1,4 @@
-# Edgar
+# Howlet
 
 A free, no-API-key Python client + CLI + **Bloomberg-style terminal
 dashboard** for SEC EDGAR data — starting from **Form 13F** (the
@@ -61,72 +61,72 @@ https://www.sec.gov/os/webmaster-faq#developers. Generic strings like
 
 ```bash
 # Look up a manager's CIK by name
-edgar search berkshire
+howlet search berkshire
 
-# Show the latest holdings for a preset (see src/edgar/presets.py -
+# Show the latest holdings for a preset (see src/howlet/presets.py -
 # 14 tracked managers: buffett, burry, ackman, icahn, tepper, klarman,
 # loeb, dalio, druckenmiller, marks, lilu, einhorn, fundsmith, tigerglobal)
-edgar holdings buffett
-edgar holdings druckenmiller
-edgar holdings tepper
+howlet holdings buffett
+howlet holdings druckenmiller
+howlet holdings tepper
 
 # Or use a raw CIK directly
-edgar holdings 1067983
+howlet holdings 1067983
 
 # Export to CSV instead of printing a table
-edgar holdings buffett --csv buffett_latest.csv
+howlet holdings buffett --csv buffett_latest.csv
 
 # What changed since last quarter's filing? (new/sold/increased/decreased)
-edgar diff buffett
-edgar diff buffett --show-unchanged
-edgar diff buffett --csv buffett_changes.csv
+howlet diff buffett
+howlet diff buffett --show-unchanged
+howlet diff buffett --csv buffett_changes.csv
 
 # Which stocks do the tracked famous managers agree on right now?
-edgar consensus
-edgar consensus --min-managers 3 --csv consensus.csv
+howlet consensus
+howlet consensus --min-managers 3 --csv consensus.csv
 
 # Live-ish quotes from Yahoo Finance (works for stocks, indices, futures, crypto)
-edgar quote AAPL BRK-B ^GSPC BTC-USD
+howlet quote AAPL BRK-B ^GSPC BTC-USD
 
 # Market headlines (Yahoo Finance / CNBC / MarketWatch / SEC press releases)
-edgar news
-edgar news --symbol AAPL --symbol MSFT
+howlet news
+howlet news --symbol AAPL --symbol MSFT
 
 # Annual fundamentals from SEC XBRL (audited 10-K data)
-edgar facts AAPL
+howlet facts AAPL
 
 # Which tracked managers hold a ticker (Bloomberg HDS-style)
-edgar holders KO
+howlet holders KO
 
 # Form 4 insider transactions - who's actually buying/selling their own stock
-edgar insiders AAPL
-edgar insiders NVDA --filings 25 --all
+howlet insiders AAPL
+howlet insiders NVDA --filings 25 --all
 
 # One manager's stake in one name across quarters (watch Buffett trim AAPL)
-edgar history buffett AAPL --quarters 12
+howlet history buffett AAPL --quarters 12
 
 # Screen a whole list for open-market insider BUYS (the conviction signal)
-edgar insider-buys AAPL MSFT NVDA OXY JPM --filings 10
+howlet insider-buys AAPL MSFT NVDA OXY JPM --filings 10
 
 # What does an ETF actually hold? (latest monthly NPORT-P filing)
-edgar fund ARKK
-edgar fund VOO --csv voo_holdings.csv
+howlet fund ARKK
+howlet fund VOO --csv voo_holdings.csv
 
 # A company's recent SEC filings feed
-edgar filings AAPL --form 8-K
+howlet filings AAPL --form 8-K
 
 # Full-text search the CONTENT of every filing since 2001
-edgar fts '"supply chain disruption"' --forms 8-K
+howlet fts '"supply chain disruption"' --forms 8-K
 
 # Pre-fetch all tracked managers + ticker mappings (cron-able) so the
 # dashboard's first consensus/holders load is instant
-edgar warm
+howlet warm
 ```
 
 ## The terminal dashboard
 
 ```bash
-edgar dashboard          # then open http://127.0.0.1:8813
+howlet dashboard          # then open http://127.0.0.1:8813
 ```
 
 A Bloomberg-terminal-style dark dashboard in your browser, complete with
@@ -197,17 +197,17 @@ agent can use it as a tool belt — ask your AI "what did Buffett buy last
 quarter and how have those stocks done since?" and it can actually answer:
 
 ```bash
-pip install "edgar-terminal[mcp]"
+pip install "howlet[mcp]"
 
 # Claude Code
-claude mcp add edgar -e EDGAR_USER_AGENT="Your Name you@example.com" -- edgar mcp
+claude mcp add howlet -e EDGAR_USER_AGENT="Your Name you@example.com" -- howlet mcp
 ```
 
 Claude Desktop (`claude_desktop_config.json`):
 
 ```json
-{"mcpServers": {"edgar": {
-  "command": "edgar", "args": ["mcp"],
+{"mcpServers": {"howlet": {
+  "command": "howlet", "args": ["mcp"],
   "env": {"EDGAR_USER_AGENT": "Your Name you@example.com"}}}}
 ```
 
@@ -253,14 +253,14 @@ Not everything here has the same reliability. Know what you're standing on:
 
 ## Caching
 
-Parsed filings are cached under `~/.edgar/` keyed by accession number
+Parsed filings are cached under `~/.howlet/` keyed by accession number
 (filings never change once filed), and CUSIP→ticker answers are cached
 there too. Delete that directory to force a full refresh.
 
 Or use it as a library:
 
 ```python
-from edgar import EdgarClient, diff_holdings
+from howlet import EdgarClient, diff_holdings
 
 client = EdgarClient(user_agent="Your Name your-email@example.com")
 filings = client.list_13f_filings(cik="1067983", limit=2)
@@ -278,21 +278,21 @@ for change in diff_holdings(prior_holdings, current_holdings):
 ## Running with Docker
 
 ```bash
-docker build -t edgar:latest .
+docker build -t howlet:latest .
 
 docker run --rm -e EDGAR_USER_AGENT="Your Name your-email@example.com" \
-  edgar:latest search berkshire
+  howlet:latest search berkshire
 
 docker run --rm -e EDGAR_USER_AGENT="Your Name your-email@example.com" \
-  edgar:latest holdings buffett
+  howlet:latest holdings buffett
 
 # --csv writes inside the container; mount a volume to get the file out
 docker run --rm -e EDGAR_USER_AGENT="Your Name your-email@example.com" \
-  -v "$(pwd)/out:/out" edgar:latest holdings buffett --csv /out/buffett.csv
+  -v "$(pwd)/out:/out" howlet:latest holdings buffett --csv /out/buffett.csv
 
 # The dashboard needs the port published and 0.0.0.0 binding inside Docker
 docker run --rm -e EDGAR_USER_AGENT="Your Name your-email@example.com" \
-  -p 8813:8813 edgar:latest dashboard --host 0.0.0.0
+  -p 8813:8813 howlet:latest dashboard --host 0.0.0.0
 ```
 
 ## Rate limits

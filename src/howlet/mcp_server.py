@@ -1,21 +1,21 @@
 """MCP (Model Context Protocol) server exposing the terminal to any AI.
 
-Run with `edgar mcp` (stdio transport). Any MCP-capable client -
+Run with `howlet mcp` (stdio transport). Any MCP-capable client -
 Claude Code, Claude Desktop, or anything else that speaks MCP - can then
 call the same data views the web dashboard renders: 13F portfolios, Q/Q
 changes, smart-money consensus, holders, quotes, charts, fundamentals,
 and news. All free/keyless, same rate-limit etiquette as the CLI.
 
 Claude Code setup:
-    claude mcp add edgar -e EDGAR_USER_AGENT="Jane Doe jane@example.com" \
-        -- edgar mcp
+    claude mcp add howlet -e EDGAR_USER_AGENT="Jane Doe jane@example.com" \
+        -- howlet mcp
 
 Claude Desktop config (claude_desktop_config.json):
-    {"mcpServers": {"edgar": {
-        "command": "edgar", "args": ["mcp"],
+    {"mcpServers": {"howlet": {
+        "command": "howlet", "args": ["mcp"],
         "env": {"EDGAR_USER_AGENT": "Jane Doe jane@example.com"}}}}
 
-Requires the optional dependency: pip install "edgar-terminal[mcp]"
+Requires the optional dependency: pip install "howlet[mcp]"
 """
 
 from __future__ import annotations
@@ -33,12 +33,12 @@ def build_server(user_agent: str):
     except ImportError as exc:  # pragma: no cover - exercised via CLI message
         raise ImportError(
             "The MCP server needs the 'mcp' package. Install it with:\n"
-            '    pip install "edgar-terminal[mcp]"'
+            '    pip install "howlet[mcp]"'
         ) from exc
 
     svc = Services(user_agent)
     server = FastMCP(
-        "edgar",
+        "howlet",
         instructions=(
             "Free SEC EDGAR 13F + market data terminal. 13F filings report "
             "institutional managers' long US equity positions quarterly with "

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from edgar.indicators import (
+from howlet.indicators import (
     bollinger_bands,
     ema,
     macd,

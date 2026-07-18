@@ -1,4 +1,4 @@
-# Skill Library Index — edgar
+# Skill Library Index — Howlet
 
 Sixteen skills, ranked by **quality bought per token spent reading**.
 The ranking logic: skills that prevent whole classes of silent, expensive

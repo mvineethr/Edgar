@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import responses
 
-from edgar.market import CHART_URL, YahooMarketClient
+from howlet.market import CHART_URL, YahooMarketClient
 
 AAPL_URL = CHART_URL.format(symbol="AAPL")
 

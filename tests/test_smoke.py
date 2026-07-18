@@ -8,8 +8,8 @@ file, or the vendored chart library disappearing from the package.
 
 from pathlib import Path
 
-from edgar.dashboard import create_app
-from edgar.views import Services
+from howlet.dashboard import create_app
+from howlet.views import Services
 
 
 def _app():
@@ -35,6 +35,6 @@ def test_index_serves_the_terminal_html():
 
 
 def test_vendored_klinecharts_ships_with_the_package():
-    static = Path(__file__).parent.parent / "src" / "edgar" / "static"
+    static = Path(__file__).parent.parent / "src" / "howlet" / "static"
     assert (static / "klinecharts.min.js").is_file()
     assert (static / "klinecharts.LICENSE").is_file()

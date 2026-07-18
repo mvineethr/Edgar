@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from edgar.diff import diff_holdings
-from edgar.models import Holding
+from howlet.diff import diff_holdings
+from howlet.models import Holding
 
 
 def _holding(name, cusip, value, shares, share_type="SH", discretion="SOLE"):

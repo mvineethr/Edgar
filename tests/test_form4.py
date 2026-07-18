@@ -6,9 +6,9 @@ from datetime import date
 
 import responses
 
-from edgar.client import EdgarClient
-from edgar.form4 import get_form4_transactions, list_form4_filings, parse_form4
-from edgar.models import FilingSummary
+from howlet.client import EdgarClient
+from howlet.form4 import get_form4_transactions, list_form4_filings, parse_form4
+from howlet.models import FilingSummary
 
 # Trimmed from a real AAPL Form 4 captured live on 2026-07-17
 # (accession 0001140361-26-025622); don't simplify - the footnote-only

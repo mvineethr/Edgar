@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from edgar.risk import (
+from howlet.risk import (
     analyze_portfolio,
     annualized_volatility_pct,
     daily_returns,

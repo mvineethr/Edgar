@@ -153,9 +153,9 @@ Checklist at investigation close:
 
 ---
 
-## 4. Worked instance (edgar, mined 2026-07-07)
+## 4. Worked instance (howlet, mined 2026-07-07)
 
-The exemplar repo (`D:\src\edgar` — a free SEC-EDGAR/market terminal; 13F is the
+The exemplar repo (`D:\src\howlet` — a free SEC-EDGAR/market terminal; 13F is the
 quarterly SEC filing where institutional managers disclose US long equity
 holdings) was **never `git init`ed**. Its `HANDOVER.md` is the sole chronicle;
 `CLAUDE.md` carries the gotcha layer; `tests/` carries the executable layer.
@@ -164,8 +164,8 @@ This table is Section 2b applied for real — every row extracted from
 
 | # | Symptom | Root cause | Evidence | Status |
 |---|---|---|---|---|
-| 1 | Company search returned `ARRAY(0x55d6f0feff88)` instead of company names | SEC's `output=atom` endpoint is broken **server-side** (stringified Perl array refs in `<entry title>`); offline mocks never caught it because the mock XML was hand-built correctly | First-ever live run (`edgar search berkshire`, 2026-06-30) vs green offline suite | `fixed+regression-tested` — parse the HTML results table instead; `test_search_company_cik_parses_html_table` (tests/test_client.py) uses a real anonymized HTML fixture |
-| 2 | Portfolio totals 1000x too large; field labeled "$000s" | SEC's Jan-2023 amendment: 13F `<value>` is **whole dollars** post-2023 (was thousands before) | Berkshire's reported total 263,095,703,570 only makes sense as $263B, not $263T | `fixed-untested` — renamed `value_usd_thousands`→`value_usd` everywhere, live-verified ($263.10B); guard is the `Holding` docstring (src/edgar/models.py) + CLAUDE.md gotcha, no dedicated test (data-semantics rename) |
+| 1 | Company search returned `ARRAY(0x55d6f0feff88)` instead of company names | SEC's `output=atom` endpoint is broken **server-side** (stringified Perl array refs in `<entry title>`); offline mocks never caught it because the mock XML was hand-built correctly | First-ever live run (`howlet search berkshire`, 2026-06-30) vs green offline suite | `fixed+regression-tested` — parse the HTML results table instead; `test_search_company_cik_parses_html_table` (tests/test_client.py) uses a real anonymized HTML fixture |
+| 2 | Portfolio totals 1000x too large; field labeled "$000s" | SEC's Jan-2023 amendment: 13F `<value>` is **whole dollars** post-2023 (was thousands before) | Berkshire's reported total 263,095,703,570 only makes sense as $263B, not $263T | `fixed-untested` — renamed `value_usd_thousands`→`value_usd` everywhere, live-verified ($263.10B); guard is the `Holding` docstring (src/howlet/models.py) + CLAUDE.md gotcha, no dedicated test (data-semantics rename) |
 | 3 | Chevron rendered with ticker "CHV"; Yahoo has no CHV quote | OpenFIGI's first listing for a CUSIP isn't always the US ticker (stale "CHV" precedes US-composite "CVX") | Live dashboard render of Berkshire's portfolio, 2026-07-06 | `fixed+regression-tested` — prefer `exchCode == "US"`; `test_resolve_prefers_us_composite_listing` (tests/test_tickers.py) |
 | 4 | AAPL showed "+10.18%" as a day change on a quiet day | Yahoo's `chartPreviousClose` is the close before the **range start**, not yesterday — "change" was actually the whole range's drift | 1-month-range quotes made the %CHG column show 1-month moves | `fixed+regression-tested` — daily bars use the second-to-last bar as previous close; `test_get_quote_parses_price_change_and_sparkline` + `test_get_quote_intraday_interval_keeps_meta_previous_close` (tests/test_market.py) |
 | 5 | Yield-curve tests green, live curve empty `{}` | Treasury OData values nest under `<m:properties>` (metadata namespace); the parser AND its hand-built fixture **shared the same wrong assumption** (d: namespace) — mocks agreed with the code, not with reality | Live fetch returned nothing while the suite passed (2026-07-06) | `fixed+regression-tested` — rewrote with local-tag-name matching; fixture now copies the real feed (tests/test_macro.py); full curve verified live (10y 4.48%) |
@@ -177,7 +177,7 @@ Rows demonstrating the rest of the status vocabulary, from the same chronicle:
 | Symptom / item | Status |
 |---|---|
 | FRED (macro data, optional `FRED_API_KEY`) built, never run with a real key | `open` — first command: set a real key and hit the ECO screen / `macro_view` |
-| Pre-2013 SGML 13F filings — should error clearly, path never exercised | `open` — chronicle names the recipe: find an old 13F-HR via `edgar search`, fetch its index live, confirm the error is useful, not a raw traceback |
+| Pre-2013 SGML 13F filings — should error clearly, path never exercised | `open` — chronicle names the recipe: find an old 13F-HR via `howlet search`, fetch its index live, confirm the error is useful, not a raw traceback |
 | Chubb (Swiss issuer) renders tickerless — OpenFIGI keyless can't map it | `open` (candidate fix recorded: name-based fallback via SEC `company_tickers.json`) — the tickerless render itself is a documented non-bug (degradation by design) |
 | Schwab brokerage/trader API integration | `won't-fix` — "explicitly deferred by user ('not now')", attribution recorded so it isn't re-pitched |
 | GOOGL/GOOG and LEN/LEN.B appear as two rows each | **Documented non-bug** — different CUSIPs for different share classes; chronicle says "correct output, not a duplicate-row bug. Worth remembering if it looks surprising later." |
@@ -204,9 +204,9 @@ items. That is the entire point of the skill.
 
 ## 6. Provenance and maintenance
 
-- Written 2026-07-07 against `D:\src\edgar` (edgar). All incident rows mined
+- Written 2026-07-07 against `D:\src\howlet` (howlet). All incident rows mined
   from `HANDOVER.md` (sessions 2026-06-30 → 2026-07-07) and `CLAUDE.md`, and
-  cross-checked against `src/edgar/models.py`, `tests/test_client.py`,
+  cross-checked against `src/howlet/models.py`, `tests/test_client.py`,
   `tests/test_tickers.py`, `tests/test_market.py`, `tests/test_macro.py`,
   `tests/test_dashboard.py`.
 - **Volatile facts:** test count (111 as of 2026-07-07 — CLAUDE.md's "108" was

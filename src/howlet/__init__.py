@@ -1,4 +1,4 @@
-"""Edgar - free Python client for SEC EDGAR 13F institutional holdings data.
+"""Howlet - free Python client for SEC EDGAR 13F institutional holdings data.
 
 No API key required. SEC just asks that requests carry a descriptive
 User-Agent (name + contact email). See README.md for setup.

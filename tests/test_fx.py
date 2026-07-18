@@ -7,7 +7,7 @@ import json
 import pytest
 import responses
 
-from edgar import fx
+from howlet import fx
 
 # Captured from live api.frankfurter.dev/v1/latest on 2026-07-17.
 SAMPLE = {

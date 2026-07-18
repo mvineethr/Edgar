@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import responses
 
-from edgar import regulatory
+from howlet import regulatory
 
 # Trimmed from a live response captured 2026-07-17 (fields[] filter on);
 # keep the wrapper keys - results live under "results", not at top level.
