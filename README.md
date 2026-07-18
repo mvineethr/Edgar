@@ -1,6 +1,9 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mvineethr/Howlet/main/assets/banner.svg" alt="Howlet - free, open-source SEC EDGAR market terminal" width="600">
+  <img src="https://raw.githubusercontent.com/mvineethr/Howlet/main/assets/logo.png" alt="Howlet - free, open-source SEC EDGAR market terminal" width="260">
 </p>
+
+<h1 align="center">Howlet</h1>
+<p align="center"><i>Free, open-source SEC EDGAR market terminal</i></p>
 
 <p align="center">
 <a href="https://pypi.org/project/howlet/"><img src="https://img.shields.io/pypi/v/howlet.svg" alt="PyPI"></a>
