@@ -318,3 +318,5 @@ MIT. See `LICENSE`.
 
 `CLAUDE.md` for a development brief — open this project in Claude Code and
 it'll pick up context on what's built and what's worth building next.
+#   E d g a r  
+ 
